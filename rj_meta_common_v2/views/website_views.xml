@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Website form page -->
+    <record id="view_website_form_meta_common" model="ir.ui.view">
+        <field name="name">website.form.meta.common</field>
+        <field name="model">website</field>
+        <field name="inherit_id" ref="website.view_website_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Meta Panel" name="meta_common_panel"
+                      groups="rj_meta_common_v2.group_meta_common_manager,base.group_system">
+                    <group>
+                        <group string="Side Panel">
+                            <field name="meta_panel_enabled"/>
+                            <field name="meta_panel_label"/>
+                            <field name="meta_panel_position"/>
+                            <field name="meta_panel_open_mode"/>
+                            <field name="meta_panel_default_screen"/>
+                            <field name="meta_panel_show_on_mobile"/>
+                            <field name="meta_panel_require_editor"/>
+                        </group>
+                        <group string="Meta Console URLs">
+                            <field name="meta_url_business_suite" widget="url"/>
+                            <field name="meta_url_ads_manager" widget="url"/>
+                            <field name="meta_url_events_manager" widget="url"/>
+                            <field name="meta_url_commerce" widget="url"/>
+                            <field name="meta_url_whatsapp" widget="url"/>
+                            <field name="meta_url_custom" widget="url"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        When enabled, a Meta floating button appears on every website page
+                        (bottom-right by default). Leave <strong>Editors Only</strong> OFF so
+                        all visitors see the button. Drag the <strong>Meta Panel</strong>
+                        snippet for an on-page block as well.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+        Inject floating Meta button on every page when enabled.
+        Server-side HTML so the button is visible even if OWL/JS fails.
+        Hidden only in website editor (editable).
+    -->
+    <template id="meta_common_panel_layout" name="Meta Common Side Panel" inherit_id="website.layout" priority="65">
+        <xpath expr="//body" position="inside">
+            <t t-if="website and website.meta_panel_enabled and not editable">
+                <t t-set="meta_cfg" t-value="website.get_meta_panel_frontend_config()"/>
+                <t t-if="meta_cfg.get('enabled')">
+                    <div id="rj_meta_common_v2_root"
+                         class="o_rj_meta_common_v2_root"
+                         t-att-class="(meta_cfg.get('position') == 'left' and 'pos-left' or 'pos-right') + (not meta_cfg.get('showOnMobile') and ' hide-mobile' or '')"
+                         t-att-data-position="meta_cfg.get('position') or 'right'">
+                        <!-- JSON for OWL enhancement -->
+                        <script type="application/json" id="rj_meta_common_v2_config"
+                                t-out="website.get_meta_panel_frontend_config_json()"/>
+
+                        <!-- Server-side FAB (always visible without JS) -->
+                        <div class="o_rj_meta_ssr_panel"
+                             t-att-class="(meta_cfg.get('position') == 'left' and 'pos-left' or 'pos-right') + (not meta_cfg.get('showOnMobile') and ' hide-mobile' or '')">
+                            <details class="o_rj_meta_ssr_details">
+                                <summary class="o_rj_meta_fab o_rj_meta_ssr_fab"
+                                         t-att-title="meta_cfg.get('label') or 'Meta'">
+                                    <span class="o_rj_meta_fab_icon">f</span>
+                                    <span class="o_rj_meta_fab_text" t-esc="meta_cfg.get('label') or 'Meta'"/>
+                                </summary>
+                                <div class="o_rj_meta_ssr_menu">
+                                    <div class="o_rj_meta_ssr_menu_title">Meta Console</div>
+                                    <t t-foreach="meta_cfg.get('screens') or []" t-as="screen" t-key="screen.get('key')">
+                                        <a class="o_rj_meta_ssr_link"
+                                           t-att-href="screen.get('url')"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+                                            <i t-att-class="'fa ' + (screen.get('icon') or 'fa-external-link')"/>
+                                            <span t-esc="screen.get('title')"/>
+                                        </a>
+                                    </t>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Drag & drop snippet for website builder -->
+    <template id="s_meta_panel" name="Meta Panel">
+        <section class="s_meta_panel pt32 pb32 o_colored_level"
+                 data-snippet="s_meta_panel"
+                 data-name="Meta Panel">
+            <div class="container">
+                <div class="row align-items-center g-3 o_rj_meta_snippet_box p-4 rounded-3"
+                     style="background: linear-gradient(135deg,#0b1220,#163056); color:#fff;">
+                    <div class="col-lg-8">
+                        <h3 class="h4 mb-2">Meta Business Console</h3>
+                        <p class="mb-0 opacity-75">
+                            Open Ads Manager, Events Manager, Business Suite and more without leaving your site workflow.
+                            Enable the global side panel in Website settings for a floating control on every page.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="https://business.facebook.com/"
+                           class="btn btn-primary o_rj_meta_snippet_btn"
+                           target="_blank" rel="noopener">
+                            Open Business Suite
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+</odoo>

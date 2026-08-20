@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_meta_lead_ads_config_user,meta.lead.ads.config.user,model_meta_lead_ads_config,group_meta_lead_ads_user,1,0,0,0
+access_meta_lead_ads_config_manager,meta.lead.ads.config.manager,model_meta_lead_ads_config,group_meta_lead_ads_manager,1,1,1,1
+access_meta_lead_ads_log_user,meta.lead.ads.api.log.user,model_meta_lead_ads_api_log,group_meta_lead_ads_user,1,0,0,0
+access_meta_lead_ads_log_manager,meta.lead.ads.api.log.manager,model_meta_lead_ads_api_log,group_meta_lead_ads_manager,1,1,1,1
+access_meta_lead_ads_biz_user,meta.lead.ads.form.user,model_meta_lead_ads_form,group_meta_lead_ads_user,1,0,0,0
+access_meta_lead_ads_biz_manager,meta.lead.ads.form.manager,model_meta_lead_ads_form,group_meta_lead_ads_manager,1,1,1,1
+access_meta_lead_ads_imp_manager,meta.lead.ads.import.wizard.manager,model_meta_lead_ads_import_wizard,group_meta_lead_ads_manager,1,1,1,1
+access_meta_lead_ads_exp_manager,meta.lead.ads.export.wizard.manager,model_meta_lead_ads_export_wizard,group_meta_lead_ads_manager,1,1,1,1
+access_meta_lead_ads_leadtrack_user,meta.lead.ads.lead.user,model_meta_lead_ads_lead,group_meta_lead_ads_user,1,0,0,0
+access_meta_lead_ads_leadtrack_manager,meta.lead.ads.lead.manager,model_meta_lead_ads_lead,group_meta_lead_ads_manager,1,1,1,1

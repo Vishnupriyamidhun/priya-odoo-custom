@@ -1,0 +1,345 @@
+// Meta Common — floating side panel (website frontend)
+.o_rj_meta_common_v2_root {
+    position: relative;
+    z-index: 1055;
+}
+
+/* Server-side FAB (works without OWL/JS) */
+.o_rj_meta_ssr_panel {
+    position: fixed;
+    bottom: 24px;
+    z-index: 1060;
+}
+.o_rj_meta_ssr_panel.pos-right {
+    right: 20px;
+}
+.o_rj_meta_ssr_panel.pos-left {
+    left: 20px;
+}
+.o_rj_meta_ssr_panel.hide-mobile {
+    @media (max-width: 767.98px) {
+        display: none !important;
+    }
+}
+.o_rj_meta_ssr_details {
+    position: relative;
+}
+.o_rj_meta_ssr_details > summary {
+    list-style: none;
+}
+.o_rj_meta_ssr_details > summary::-webkit-details-marker {
+    display: none;
+}
+.o_rj_meta_ssr_fab {
+    /* reuse .o_rj_meta_fab look; override fixed pos from OWL fab */
+    position: static !important;
+}
+.o_rj_meta_ssr_menu {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    right: 0;
+    min-width: 240px;
+    max-width: 90vw;
+    background: #0f1522;
+    color: #eef3fb;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.o_rj_meta_ssr_panel.pos-left .o_rj_meta_ssr_menu {
+    right: auto;
+    left: 0;
+}
+.o_rj_meta_ssr_menu_title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    padding: 4px 8px 8px;
+}
+.o_rj_meta_ssr_link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #eef3fb !important;
+    text-decoration: none !important;
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.o_rj_meta_ssr_link:hover {
+    background: rgba(24, 119, 242, 0.22);
+}
+.o_rj_meta_ssr_link .fa {
+    width: 18px;
+    text-align: center;
+    color: #4c9aff;
+}
+
+/* When OWL mounts, hide SSR duplicate to avoid double buttons */
+.o_rj_meta_common_v2_root.o_rj_meta_owl_mounted .o_rj_meta_ssr_panel {
+    display: none !important;
+}
+
+
+.o_rj_meta_panel {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.o_rj_meta_fab {
+    position: fixed;
+    bottom: 24px;
+    z-index: 1060;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #1877f2, #0d5ec9);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 10px 28px rgba(24, 119, 242, 0.45);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(24, 119, 242, 0.55);
+    }
+}
+
+.o_rj_meta_panel.pos-right .o_rj_meta_fab {
+    right: 20px;
+}
+.o_rj_meta_panel.pos-left .o_rj_meta_fab {
+    left: 20px;
+}
+
+.o_rj_meta_fab_icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: #fff;
+    color: #1877f2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.o_rj_meta_backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 12, 20, 0.45);
+    z-index: 1065;
+}
+
+.o_rj_meta_drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    // Avoid Sass min(px, vw) — libsass errors: Incompatible units 'vw' and 'px'
+    width: 420px;
+    max-width: 94%;
+    z-index: 1070;
+    background: #0f1522;
+    color: #eef3fb;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+}
+
+.o_rj_meta_panel.pos-right .o_rj_meta_drawer {
+    right: 0;
+    animation: rjMetaSlideInRight 0.2s ease;
+}
+.o_rj_meta_panel.pos-left .o_rj_meta_drawer {
+    left: 0;
+    animation: rjMetaSlideInLeft 0.2s ease;
+}
+
+@keyframes rjMetaSlideInRight {
+    from { transform: translateX(24px); opacity: 0.6; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes rjMetaSlideInLeft {
+    from { transform: translateX(-24px); opacity: 0.6; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.o_rj_meta_drawer_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 10px;
+    border-bottom: 1px solid #243044;
+}
+.o_rj_meta_drawer_title {
+    font-size: 16px;
+    font-weight: 800;
+}
+.o_rj_meta_drawer_sub {
+    font-size: 12px;
+    color: #9aa6b8;
+}
+.o_rj_meta_close {
+    border: 0;
+    background: #1b2435;
+    color: #fff;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.o_rj_meta_tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #243044;
+}
+.o_rj_meta_tab {
+    border: 1px solid #2c3a52;
+    background: #161e2e;
+    color: #c9d5ea;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    &.active {
+        background: #1877f2;
+        border-color: #1877f2;
+        color: #fff;
+    }
+}
+
+.o_rj_meta_body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 10px;
+}
+.o_rj_meta_url_bar {
+    display: flex;
+    gap: 8px;
+}
+.o_rj_meta_url_input {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid #2c3a52;
+    background: #0b101a;
+    color: #d7e2f5;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+.o_rj_meta_open_btn {
+    border-radius: 10px;
+    background: #1877f2;
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.o_rj_meta_iframe_wrap {
+    flex: 1;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_rj_meta_iframe {
+    flex: 1;
+    width: 100%;
+    min-height: 320px;
+    border: 1px solid #2c3a52;
+    border-radius: 12px;
+    background: #fff;
+}
+.o_rj_meta_iframe_hint {
+    font-size: 11px;
+    color: #9aa6b8;
+}
+
+.o_rj_meta_preview {
+    flex: 1;
+    overflow: auto;
+}
+.o_rj_meta_preview_card {
+    background: linear-gradient(145deg, #152238, #0d1526);
+    border: 1px solid #2c3a52;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+}
+.o_rj_meta_preview_icon {
+    display: inline-flex;
+    background: #1877f2;
+    color: #fff;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+}
+.o_rj_meta_preview_card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+.o_rj_meta_preview_card p {
+    margin: 0 0 14px;
+    color: #9aa6b8;
+    font-size: 13px;
+}
+.o_rj_meta_preview_cta {
+    display: inline-block;
+}
+.o_rj_meta_quick_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.o_rj_meta_quick_list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #d7e2f5 !important;
+    text-decoration: none !important;
+    border: 1px solid transparent;
+}
+.o_rj_meta_quick_list li a:hover {
+    background: #161e2e;
+    border-color: #2c3a52;
+}
+
+// Hide on very small screens if disabled via class
+.o_rj_meta_panel.hide-mobile {
+    @media (max-width: 767.98px) {
+        display: none !important;
+    }
+}
+
+// Snippet block
+.o_rj_meta_snippet_box {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}

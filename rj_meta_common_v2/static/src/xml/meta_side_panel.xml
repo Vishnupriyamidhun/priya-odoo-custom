@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="rj_meta_common_v2.MetaSidePanel">
+        <div class="o_rj_meta_panel" t-att-class="rootClass">
+            <!-- Floating action button -->
+            <button type="button"
+                    class="o_rj_meta_fab"
+                    t-on-click="togglePanel"
+                    t-att-title="config.label || 'Meta'"
+                    t-att-aria-expanded="state.open ? 'true' : 'false'">
+                <span class="o_rj_meta_fab_icon">f</span>
+                <span class="o_rj_meta_fab_text" t-esc="config.label || 'Meta'"/>
+            </button>
+
+            <!-- Backdrop -->
+            <div t-if="state.open" class="o_rj_meta_backdrop" t-on-click="closePanel"/>
+
+            <!-- Drawer -->
+            <aside t-if="state.open" class="o_rj_meta_drawer" t-att-class="drawerClass">
+                <header class="o_rj_meta_drawer_header">
+                    <div>
+                        <div class="o_rj_meta_drawer_title">Meta Console</div>
+                        <div class="o_rj_meta_drawer_sub" t-esc="config.websiteName || 'Website'"/>
+                    </div>
+                    <button type="button" class="o_rj_meta_close" t-on-click="closePanel" aria-label="Close">
+                        ×
+                    </button>
+                </header>
+
+                <nav class="o_rj_meta_tabs">
+                    <t t-foreach="config.screens || []" t-as="screen" t-key="screen.key">
+                        <button type="button"
+                                class="o_rj_meta_tab"
+                                t-att-class="state.activeKey === screen.key ? 'active' : ''"
+                                t-on-click="() => this.selectScreen(screen)">
+                            <i t-att-class="'fa ' + (screen.icon || 'fa-external-link')"/>
+                            <span t-esc="screen.title"/>
+                        </button>
+                    </t>
+                </nav>
+
+                <div class="o_rj_meta_body">
+                    <div class="o_rj_meta_url_bar">
+                        <input type="text" class="o_rj_meta_url_input" readonly="readonly"
+                               t-att-value="state.activeUrl"/>
+                        <a class="o_rj_meta_open_btn"
+                           t-att-href="state.activeUrl"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Open
+                        </a>
+                    </div>
+
+                    <t t-if="showEmbed">
+                        <div class="o_rj_meta_iframe_wrap">
+                            <iframe class="o_rj_meta_iframe"
+                                    t-att-src="state.activeUrl"
+                                    title="Meta embedded screen"
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"/>
+                            <div class="o_rj_meta_iframe_hint">
+                                If the console stays blank, Meta may block embedding — use <b>Open</b>.
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="o_rj_meta_preview">
+                            <div class="o_rj_meta_preview_card">
+                                <div class="o_rj_meta_preview_icon">Meta</div>
+                                <h3 t-esc="state.activeTitle || 'Meta'"/>
+                                <p>Open the selected Meta screen in a secure new tab. Paste your Business / Ad account URLs in Website settings for one-click access from every page.</p>
+                                <a class="btn btn-primary o_rj_meta_preview_cta"
+                                   t-att-href="state.activeUrl"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    Launch Meta Screen
+                                </a>
+                            </div>
+                            <ul class="o_rj_meta_quick_list">
+                                <t t-foreach="config.screens || []" t-as="screen" t-key="'q_' + screen.key">
+                                    <li>
+                                        <a t-att-href="screen.url" target="_blank" rel="noopener noreferrer">
+                                            <i t-att-class="'fa ' + (screen.icon || 'fa-link')"/>
+                                            <span t-esc="screen.title"/>
+                                        </a>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </t>
+                </div>
+            </aside>
+        </div>
+    </t>
+    
+    <t t-name="rj_meta_common_v2.MetaSidePanelBackend">
+        <t t-if="config.enabled">
+            <MetaSidePanel config="config"/>
+        </t>
+    </t>
+</templates>

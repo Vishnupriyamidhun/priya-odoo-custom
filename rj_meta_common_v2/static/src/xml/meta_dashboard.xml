@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="rj_meta_common_v2.MetaDashboard">
+        <div class="o_rj_meta_dashboard h-100 overflow-auto">
+            <div class="o_rj_meta_dash_hero">
+                <div>
+                    <div class="o_rj_meta_dash_kicker">Meta · Odoo 19 · Customer Dashboard</div>
+                    <h1 class="o_rj_meta_dash_title" t-esc="state.title"/>
+                    <p class="o_rj_meta_dash_sub" t-esc="state.subtitle"/>
+                </div>
+                <div class="o_rj_meta_dash_hero_actions">
+                    <button t-if="state.mode === 'module'" class="btn btn-light btn-sm" t-on-click="openSuite">
+                        <i class="fa fa-th-large me-1"/> Suite Dashboard
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" t-on-click="loadData" t-att-disabled="state.loading">
+                        <i t-att-class="'fa me-1 ' + (state.loading ? 'fa-spinner fa-spin' : 'fa-refresh')"/>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI row -->
+            <div class="o_rj_meta_kpi_row" t-if="state.kpis.length">
+                <t t-foreach="state.kpis" t-as="kpi" t-key="kpi_index">
+                    <div class="o_rj_meta_kpi_card" t-att-style="'border-top: 3px solid ' + (kpi.color || '#1877F2')">
+                        <div class="o_rj_meta_kpi_icon" t-att-style="'background:' + (kpi.color || '#1877F2')">
+                            <i t-att-class="'fa ' + (kpi.icon || 'fa-circle')"/>
+                        </div>
+                        <div class="o_rj_meta_kpi_text">
+                            <div class="o_rj_meta_kpi_label" t-esc="kpi.label"/>
+                            <div class="o_rj_meta_kpi_value" t-esc="kpi.value"/>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <div t-if="state.loading" class="text-center p-5 text-muted">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+                <div class="mt-2">Loading dashboard…</div>
+            </div>
+
+            <!-- Action cards: all actions visible on each card -->
+            <div class="o_rj_meta_section_label" t-if="!state.loading and state.cards.length">
+                <i class="fa fa-th-large me-1"/> Action cards
+            </div>
+            <div class="o_rj_meta_card_grid" t-if="!state.loading">
+                <t t-foreach="state.cards" t-as="card" t-key="card.id">
+                    <div class="o_rj_meta_action_card">
+                        <div class="o_rj_meta_action_card_head" t-att-style="'background: linear-gradient(135deg, ' + (card.color || '#1877F2') + ', #0d1526)'">
+                            <div class="o_rj_meta_action_card_icon">
+                                <i t-att-class="'fa ' + (card.icon || 'fa-cube')"/>
+                            </div>
+                            <div class="o_rj_meta_action_card_head_text">
+                                <div class="o_rj_meta_action_card_title" t-esc="card.title"/>
+                                <div class="o_rj_meta_action_card_sub" t-esc="card.subtitle"/>
+                            </div>
+                            <span t-if="card.badge" class="o_rj_meta_action_badge" t-esc="card.badge"/>
+                        </div>
+                        <div class="o_rj_meta_action_card_body">
+                            <div class="o_rj_meta_action_stats" t-if="card.stats and card.stats.length">
+                                <t t-foreach="card.stats" t-as="st" t-key="st_index">
+                                    <div class="o_rj_meta_action_stat" t-att-class="st.tone ? ('tone-' + st.tone) : ''">
+                                        <div class="val" t-esc="st.value"/>
+                                        <div class="lbl" t-esc="st.label"/>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Extra details (what customer can do) -->
+                            <ul class="o_rj_meta_action_details" t-if="card.details and card.details.length">
+                                <t t-foreach="card.details" t-as="d" t-key="d_index">
+                                    <li t-esc="d"/>
+                                </t>
+                            </ul>
+
+                            <!-- All card actions always visible -->
+                            <div class="o_rj_meta_action_buttons" t-if="card.actions and card.actions.length">
+                                <div class="o_rj_meta_action_buttons_row">
+                                    <t t-foreach="card.actions || []" t-as="act" t-key="act_index">
+                                        <button type="button"
+                                                class="btn btn-sm"
+                                                t-att-class="act.primary ? 'btn-primary' : 'btn-outline-secondary'"
+                                                t-on-click="() => this.onAction(act)">
+                                            <i t-att-class="'fa ' + (act.icon || 'fa-arrow-right') + ' me-1'"/>
+                                            <t t-esc="act.label"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                            <div t-if="!(card.actions &amp;&amp; card.actions.length)" class="text-muted small">
+                                No actions available
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Recent logs / activity details -->
+            <div class="o_rj_meta_logs_panel" t-if="!state.loading and state.recent_logs and state.recent_logs.length">
+                <div class="o_rj_meta_section_label">
+                    <i class="fa fa-list-alt me-1"/> Recent API logs &amp; details
+                </div>
+                <div class="o_rj_meta_logs_table_wrap">
+                    <table class="o_rj_meta_logs_table">
+                        <thead>
+                            <tr>
+                                <th>When</th>
+                                <th t-if="state.mode === 'suite'">App</th>
+                                <th>Name</th>
+                                <th>Endpoint</th>
+                                <th>Status</th>
+                                <th>HTTP</th>
+                                <th>Error</th>
+                                <th/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.recent_logs" t-as="log" t-key="log_index">
+                                <tr t-att-class="this.logStateClass(log.state)">
+                                    <td class="text-muted" t-esc="log.date || '—'"/>
+                                    <td t-if="state.mode === 'suite'">
+                                        <span class="o_rj_meta_log_app" t-att-style="'border-color:' + (log.color || '#1877F2')" t-esc="log.app || ''"/>
+                                    </td>
+                                    <td t-esc="log.name"/>
+                                    <td class="text-muted small" t-esc="log.endpoint || '—'"/>
+                                    <td>
+                                        <span class="o_rj_meta_log_state" t-att-class="this.logStateClass(log.state)" t-esc="log.state || '—'"/>
+                                    </td>
+                                    <td t-esc="log.status_code || '—'"/>
+                                    <td class="small text-danger" t-esc="log.error || ''"/>
+                                    <td>
+                                        <button type="button" class="btn btn-link btn-sm p-0" t-on-click="() => this.openLog(log)">
+                                            Open
+                                        </button>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div t-if="!state.loading and !state.cards.length" class="o_view_nocontent">
+                <div class="o_nocontent_help">
+                    <p class="o_view_nocontent_smiling_face">No Meta apps found</p>
+                    <p>Install Meta suite modules from Apps to see action cards here.</p>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

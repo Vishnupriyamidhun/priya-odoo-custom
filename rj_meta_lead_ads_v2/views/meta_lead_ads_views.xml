@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Config -->
+    <record id="view_meta_lead_ads_config_list" model="ir.ui.view">
+        <field name="name">meta.lead.ads.config.list</field>
+        <field name="model">meta.lead.ads.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="enabled"/>
+                <field name="last_connection_state"/>
+                <field name="log_count"/>
+                <field name="error_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_meta_lead_ads_config_form" model="ir.ui.view">
+        <field name="name">meta.lead.ads.config.form</field>
+        <field name="model">meta.lead.ads.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_test_connection" type="object" string="Test Connection" class="btn-primary"/>
+                    <button name="action_sync_import" type="object" string="Import from Meta" class="btn-secondary"/>
+                    <button name="action_open_import_wizard" type="object" string="Import Wizard" class="btn-secondary"/>
+                    <button name="action_open_export_wizard" type="object" string="Export Wizard" class="btn-secondary"/>
+                    <field name="last_connection_state" widget="badge"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="log_count" widget="statinfo" string="Logs"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-check">
+                            <field name="success_count" widget="statinfo" string="OK"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="error_count" widget="statinfo" string="Errors"/>
+                        </button>
+                        <button name="action_open_records" type="object" class="oe_stat_button" icon="fa-database">
+                            <field name="record_count" widget="statinfo" string="Records"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Disabled" bg_color="text-bg-danger" invisible="enabled"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Configuration name"/></h1>
+                    </div>
+                    <group>
+                        <group string="General">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            
+                            <field name="enabled"/>
+                            <field name="active" invisible="1"/>
+                            <field name="last_connection_date" readonly="1"/>
+                        </group>
+                        <group string="Meta Credentials">
+                            <field name="access_token" password="True"/>
+                            <field name="app_id"/>
+                            <field name="ad_account_id"/>
+                            <field name="pixel_id"/>
+                            <field name="page_id"/>
+                            <field name="catalog_id"/>
+                            <field name="waba_id"/>
+                            <field name="graph_version"/>
+                            <field name="test_event_code"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_meta_lead_ads_config" model="ir.actions.act_window">
+        <field name="name">Configuration</field>
+        <field name="res_model">meta.lead.ads.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Logs -->
+    <record id="view_meta_lead_ads_log_list" model="ir.ui.view">
+        <field name="name">meta.lead.ads.api.log.list</field>
+        <field name="model">meta.lead.ads.api.log</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'error'" decoration-success="state == 'success'">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="method"/>
+                <field name="endpoint"/>
+                <field name="status_code"/>
+                <field name="state"/>
+                <field name="duration_ms"/>
+                <field name="config_id"/>
+                <button name="action_retry" type="object" string="Retry" icon="fa-refresh"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_meta_lead_ads_log_form" model="ir.ui.view">
+        <field name="name">meta.lead.ads.api.log.form</field>
+        <field name="model">meta.lead.ads.api.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_retry" type="object" string="Retry" class="btn-primary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="config_id"/>
+                        <field name="method"/>
+                        <field name="endpoint"/>
+                        <field name="url"/>
+                        <field name="status_code"/>
+                        <field name="duration_ms"/>
+                        <field name="user_id"/>
+                    </group>
+                    <group string="Payload">
+                        <field name="request_payload"/>
+                        <field name="response_payload"/>
+                        <field name="error_message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_meta_lead_ads_log_graph" model="ir.ui.view">
+        <field name="name">meta.lead.ads.api.log.graph</field>
+        <field name="model">meta.lead.ads.api.log</field>
+        <field name="arch" type="xml">
+            <graph string="API Logs" type="bar">
+                <field name="create_date" interval="day"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_meta_lead_ads_log_pivot" model="ir.ui.view">
+        <field name="name">meta.lead.ads.api.log.pivot</field>
+        <field name="model">meta.lead.ads.api.log</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="endpoint" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_meta_lead_ads_log" model="ir.actions.act_window">
+        <field name="name">API Logs / Dashboard</field>
+        <field name="res_model">meta.lead.ads.api.log</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+    </record>
+
+    <!-- Business -->
+    <record id="view_meta_lead_ads_biz_list" model="ir.ui.view">
+        <field name="name">meta.lead.ads.form.list</field>
+        <field name="model">meta.lead.ads.form</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="config_id"/>
+                <field name="meta_id"/>
+                <field name="sync_state"/>
+                <field name="last_sync_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_sync_to_meta" type="object" string="Sync" icon="fa-cloud-upload"/>
+                <button name="action_open_logs" type="object" string="Logs" icon="fa-list"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_meta_lead_ads_biz_form" model="ir.ui.view">
+        <field name="name">meta.lead.ads.form.form</field>
+        <field name="model">meta.lead.ads.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync_to_meta" type="object" string="Sync / Export to Meta" class="btn-primary"/>
+                    <button name="action_update_from_meta" type="object" string="Update from Meta" class="btn-secondary"/>
+                    <button name="action_export_meta" type="object" string="Export" class="btn-secondary"/>
+                    <button name="action_open_logs" type="object" string="Open Logs" class="btn-secondary"/>
+                    <field name="sync_state" widget="statusbar" statusbar_visible="draft,pending,done,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="config_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="meta_id"/>
+                            <field name="last_sync_date"/>
+                            <field name="last_error"/>
+                        </group>
+                        <group>
+                            <!-- module-specific fields rendered as free text notes if many -->
+                                                        <!-- extra fields -->
+                            <field name="form_id"/>
+                            <field name="page_id"/>
+                            <field name="lead_count"/>
+                            <field name="crm_team_id"/>
+                            <field name="notes"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_meta_lead_ads_biz" model="ir.actions.act_window">
+        <field name="name">Lead Ads Forms</field>
+        <field name="res_model">meta.lead.ads.form</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Wizards -->
+    <record id="view_meta_lead_ads_import_wizard" model="ir.ui.view">
+        <field name="name">meta.lead.ads.import.wizard.form</field>
+        <field name="model">meta.lead.ads.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import">
+                <group>
+                    <field name="config_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="result_message" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_import" type="object" string="Import" class="btn-primary"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_meta_lead_ads_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Wizard</field>
+        <field name="res_model">meta.lead.ads.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="view_meta_lead_ads_export_wizard" model="ir.ui.view">
+        <field name="name">meta.lead.ads.export.wizard.form</field>
+        <field name="model">meta.lead.ads.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export">
+                <group>
+                    <field name="config_id"/>
+                    <field name="result_message" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_export" type="object" string="Export / Sync" class="btn-primary"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_meta_lead_ads_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export Wizard</field>
+        <field name="res_model">meta.lead.ads.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    
+    <!-- Customer card dashboard -->
+    <record id="action_meta_lead_ads_card_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">rj_meta_common_v2_dashboard</field>
+        <field name="params" eval="{'mode': 'module', 'module_tech': 'rj_meta_lead_ads_v2'}"/>
+        <field name="context">{'module_tech': 'rj_meta_lead_ads_v2'}</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_meta_lead_ads_root" name="Meta Lead Ads" parent="crm.crm_menu_root" sequence="50"
+              groups="group_meta_lead_ads_user"/>
+    <menuitem id="menu_meta_lead_ads_dashboard" name="Dashboard" parent="menu_meta_lead_ads_root"
+              action="action_meta_lead_ads_card_dashboard" sequence="10"/>
+    
+    <menuitem id="menu_meta_lead_ads_logs" name="API Logs" parent="menu_meta_lead_ads_root"
+              action="action_meta_lead_ads_log" sequence="15"/>
+    <menuitem id="menu_meta_lead_ads_records" name="Lead Ads Forms" parent="menu_meta_lead_ads_root"
+              action="action_meta_lead_ads_biz" sequence="20"/>
+    <menuitem id="menu_meta_lead_ads_config" name="Configuration" parent="menu_meta_lead_ads_root"
+              action="action_meta_lead_ads_config" sequence="90"
+              groups="group_meta_lead_ads_manager"/>
+</odoo>

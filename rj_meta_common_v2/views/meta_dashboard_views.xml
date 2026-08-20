@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Suite-wide customer dashboard (cards + actions) -->
+    <record id="action_meta_suite_dashboard" model="ir.actions.client">
+        <field name="name">Meta Suite Dashboard</field>
+        <field name="tag">rj_meta_common_v2_dashboard</field>
+        <field name="params" eval="{'mode': 'suite'}"/>
+    </record>
+
+    <!-- App root for Meta Common -->
+    <menuitem id="menu_meta_suite_root"
+              name="Meta Suite"
+              web_icon="rj_meta_common_v2,static/description/icon.png"
+              sequence="25"
+              groups="rj_meta_common_v2.group_meta_common_user"/>
+
+    <menuitem id="menu_meta_suite_dashboard"
+              name="Dashboard"
+              parent="menu_meta_suite_root"
+              action="action_meta_suite_dashboard"
+              sequence="1"
+              groups="rj_meta_common_v2.group_meta_common_user"/>
+
+    <menuitem id="menu_meta_common_root"
+              name="Meta Common"
+              parent="menu_meta_suite_root"
+              sequence="40"
+              groups="rj_meta_common_v2.group_meta_common_user"/>
+
+    <menuitem id="menu_meta_common_settings"
+              name="Panel Settings"
+              parent="menu_meta_common_root"
+              action="website.action_website_configuration"
+              sequence="10"
+              groups="rj_meta_common_v2.group_meta_common_manager"/>
+</odoo>

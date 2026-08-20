@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="snippets" inherit_id="website.snippets" name="Meta Common Snippets">
+        <xpath expr="//snippets[@id='snippet_structure']" position="inside">
+            <t t-snippet="rj_meta_common_v2.s_meta_panel"
+               string="Meta Panel"
+               group="social"
+               t-thumbnail="/rj_meta_common_v2/static/description/icon.png">
+                <keywords>meta, facebook, ads, pixel, business suite, instagram, whatsapp, panel</keywords>
+            </t>
+        </xpath>
+    </template>
+</odoo>
