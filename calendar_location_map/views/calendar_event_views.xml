@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Full Meeting form (Save & Close / More Options / open a record) -->
+    <record id="view_calendar_event_form_department" model="ir.ui.view">
+        <field name="name">calendar.event.form.department</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Department field right before the attendees field -->
+            <field name="partner_ids" position="before">
+                <field name="department_ids" widget="many2many_tags" placeholder="Select department(s)..."/>
+                <field name="department_employee_partner_ids" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Quick Create popup (the small dialog shown when clicking a date/slot
+         on the calendar) -->
+    <record id="view_calendar_event_form_quick_create_department" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.department</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <field name="partner_ids" position="before">
+                <field name="department_ids" widget="many2many_tags" placeholder="Select department(s)..."/>
+                <field name="department_employee_partner_ids" invisible="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>
